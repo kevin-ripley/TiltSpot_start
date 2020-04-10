@@ -24,6 +24,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
@@ -50,13 +51,18 @@ public class MainActivity extends AppCompatActivity
     private float[] mAccelerometerData = new float[3];
     private float[] mMagnetometerData = new float[3];
 
+    private ImageView mSpotTop;
+    private ImageView mSpotBottom;
+    private ImageView mSpotLeft;
+    private ImageView mSpotRight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Lock the orientation to portrait (for now)
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
         mTextSensorAzimuth = (TextView) findViewById(R.id.value_azimuth);
         mTextSensorPitch = (TextView) findViewById(R.id.value_pitch);
@@ -71,6 +77,11 @@ public class MainActivity extends AppCompatActivity
                 Sensor.TYPE_ACCELEROMETER);
         mSensorMagnetometer = mSensorManager.getDefaultSensor(
                 Sensor.TYPE_MAGNETIC_FIELD);
+
+        mSpotTop = (ImageView) findViewById(R.id.spot_top);
+        mSpotBottom = (ImageView) findViewById(R.id.spot_bottom);
+        mSpotLeft = (ImageView) findViewById(R.id.spot_left);
+        mSpotRight = (ImageView) findViewById(R.id.spot_right);
     }
 
     /**
@@ -119,6 +130,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             default:
                 return;
+
         }
 
         float[] rotationMatrix = new float[9];
@@ -140,6 +152,29 @@ public class MainActivity extends AppCompatActivity
                 R.string.value_format, pitch));
         mTextSensorRoll.setText(getResources().getString(
                 R.string.value_format, roll));
+
+        if (Math.abs(pitch) < VALUE_DRIFT) {
+            pitch = 0;
+        }
+        if (Math.abs(roll) < VALUE_DRIFT) {
+            roll = 0;
+        }
+        mSpotTop.setAlpha(0f);
+        mSpotBottom.setAlpha(0f);
+        mSpotLeft.setAlpha(0f);
+        mSpotRight.setAlpha(0f);
+
+        if (pitch > 0) {
+            mSpotBottom.setAlpha(pitch);
+        } else {
+            mSpotTop.setAlpha(Math.abs(pitch));
+        }
+        if (roll > 0) {
+            mSpotLeft.setAlpha(roll);
+        } else {
+            mSpotRight.setAlpha(Math.abs(roll));
+        }
+
     }
 
     /**

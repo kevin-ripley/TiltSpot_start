@@ -1,4 +1,4 @@
-#Fri Apr 03 17:26:16 MDT 2020
+#Fri Apr 10 07:49:41 MDT 2020
 base.0=/Users/admin/Desktop/Mobile Technologies/Project Assignments/TiltSpot_start/app/build/intermediates/dex/debug/out/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
